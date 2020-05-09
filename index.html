@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <script src="p5.min.js"></script>
+    <script src="p5.sound.min.js"></script>
+    <script src="Tone.js"></script>
+    <script src="tonal.min.js"></script>
+    <script type="text/javascript" src="combinations.json"></script>
+</head>
+
+<body>
+    <div class="content-wrapper">
+        <div class="controls-wrapper">
+            <div class="play-button" id="play-button" onclick=playMusic()>
+                <img src="assets/icons/play_icon.svg" alt="">
+            </div>
+            <div class="forward-button" id="forward-button" onclick=generateMusic()>
+                <img src="assets/icons/forward_icon.svg" alt="">
+            </div>
+            <div class="pause-button" id="pause-button" onclick=pauseMusic()>
+                <div><img src="assets/icons/pause_icon.svg" alt=""></div>
+            </div>
+            <div class="stop-button" id="stop-button" onclick=stopMusic()>
+                <img src="assets/icons/stop_icon.svg" alt="">
+            </div>
+        </div>
+    </div>
+    <script src="audio.js"></script>
+</body>
+
+</html>

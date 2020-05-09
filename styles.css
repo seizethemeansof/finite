@@ -1,0 +1,90 @@
+html, body {
+    margin: 0;
+    height: 100%;
+  }
+
+body {
+  background-color: #eaeaea;
+}
+
+.content-wrapper {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.controls-wrapper {
+  width: 308px;
+  height: 200px;
+}
+
+.play-button {
+  cursor: pointer;
+  float:left;
+  width: 200px;
+  height: 92px;
+  border: 4px solid black;
+  box-sizing: border-box;
+  border-radius: 8px;
+  margin: 0 16px 16px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.play-button:hover {
+  border-color: #FF8E4F;
+}
+
+.stop-button {
+  cursor: pointer;
+  float: left;
+  width: 92px;
+  height: 92px;
+  border: 4px solid black;
+  box-sizing: border-box;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stop-button:hover {
+  border-color: #FF8E4F;
+}
+
+.pause-button {
+  cursor: pointer;
+  float: left;
+  width: 92px;
+  height: 92px;
+  border: 4px solid black;
+  box-sizing: border-box;
+  border-radius: 8px;
+  margin-right: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pause-button:hover {
+  border-color: #FF8E4F;
+}
+
+.forward-button {
+  cursor: pointer;
+  float: right;
+  width: 92px;
+  height: 200px;
+  border: 4px solid black;
+  box-sizing: border-box;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.forward-button:hover {
+  border-color: #FF8E4F;
+}
