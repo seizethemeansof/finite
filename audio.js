@@ -1,7 +1,7 @@
 let pentatonic_scale_bass = [["C2", "D2", "E2", "G2", "A2", "C3", "r"]];
 let pentatonic_scale_aigu = ["C3", "D3", "E3", "G3", "A3", "C4", "r"];
 
-let all_notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
+let all_notes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
 
 function createDuration(n_measures) {
   durations = [];
