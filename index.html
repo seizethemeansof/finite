@@ -7,10 +7,8 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="shortcut icon" href="#">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto" />
-    <script src="p5.min.js"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.25/Tone.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.3.1/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.15/Tone.js"></script>
-    <!-- <script src="tonal.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
     <script type="text/javascript" src="combinations.json"></script>
 </head>
@@ -23,14 +21,14 @@
                 <select id="key-select" onchange="keySelected();"></select>
             </div>
             <div class="mode-container">
-                <span class="select-title" style="padding-left: 24px;">Mode:</span>
+                <span class="select-title">Mode:</span>
                 <select id="mode-select" onchange="modeSelected();">
                     <option value="major">Major</option>
                     <option value="minor">Minor</option>
                 </select>
             </div>
             <div class="minor-type-container">
-                <span class="select-title hidden" id="minor-type-select" style="padding-left: 24px;">Mode type:</span>
+                <span class="select-title hidden" id="minor-type-select">Mode type:</span>
                 <select id="minor-select" onchange="minorSelected();" class="hidden">
                     <option value="natural">Natural</option>
                     <option value="harmonic">Harmonic</option>
@@ -59,7 +57,7 @@
         </div>
 
         <div class="bpm-container">
-            <span class="select-title" style="padding-left: 24px;">BPM:</span>
+            <span class="select-title">BPM:</span>
             <input type="number" min="1" max="350" style="max-width: 92px;" id="bpm-input" onchange="changeBPM();">
         </div>
     </div>
