@@ -5,31 +5,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto" />
     <script src="p5.min.js"></script>
-    <script src="p5.sound.min.js"></script>
-    <script src="Tone.js"></script>
-    <script src="tonal.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.25/Tone.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.15/Tone.js"></script>
+    <!-- <script src="tonal.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/@tonaljs/tonal/browser/tonal.min.js"></script>
     <script type="text/javascript" src="combinations.json"></script>
 </head>
 
 <body>
-    <div class="content-wrapper">
-        <div class="controls-wrapper">
-            <div class="play-button" id="play-button" onclick=playMusic()>
-                <img src="assets/icons/play_icon.svg" alt="">
+    <div class="content-container">
+        <div class="option-container">
+            <div class="key-container">
+                <span class="select-title">Key:</span>
+                <select id="key-select" onchange="keySelected();"></select>
             </div>
-            <div class="forward-button" id="forward-button" onclick=generateMusic()>
-                <img src="assets/icons/forward_icon.svg" alt="">
+            <div class="mode-container">
+                <span class="select-title" style="padding-left: 24px;">Mode:</span>
+                <select id="mode-select" onchange="modeSelected();">
+                    <option value="major">Major</option>
+                    <option value="minor">Minor</option>
+                </select>
             </div>
-            <div class="pause-button" id="pause-button" onclick=pauseMusic()>
-                <div><img src="assets/icons/pause_icon.svg" alt=""></div>
-            </div>
-            <div class="stop-button" id="stop-button" onclick=stopMusic()>
-                <img src="assets/icons/stop_icon.svg" alt="">
+            <div class="minor-type-container">
+                <span class="select-title hidden" id="minor-type-select" style="padding-left: 24px;">Mode type:</span>
+                <select id="minor-select" onchange="minorSelected();" class="hidden">
+                    <option value="natural">Natural</option>
+                    <option value="harmonic">Harmonic</option>
+                    <option value="melodic">Melodic</option>
+                </select>
             </div>
         </div>
+
+        <div class="control-container">
+            <div class="content-wrapper">
+                <div class="controls-wrapper">
+                    <div class="play-button" id="play-button" onclick=playMusic()>
+                        <img src="assets/icons/play_icon.svg" alt="">
+                    </div>
+                    <div class="forward-button" id="forward-button" onclick=generateMusic()>
+                        <img src="assets/icons/forward_icon.svg" alt="">
+                    </div>
+                    <div class="pause-button" id="pause-button" onclick=pauseMusic()>
+                        <div><img src="assets/icons/pause_icon.svg" alt=""></div>
+                    </div>
+                    <div class="stop-button" id="stop-button" onclick=stopMusic()>
+                        <img src="assets/icons/stop_icon.svg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bpm-container">
+            <span class="select-title" style="padding-left: 24px;">BPM:</span>
+            <input type="number" min="1" max="350" style="max-width: 92px;" id="bpm-input" onchange="changeBPM();">
+        </div>
     </div>
+
     <script src="audio.js"></script>
+    <script src="beatmeup.js"></script>
+    <script src="instruments.js"></script>
 </body>
 
 </html>
