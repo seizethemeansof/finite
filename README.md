@@ -6,7 +6,8 @@ Generate a random musical piece using:
 * A key
 * A mode
 * A minor mode type if minor mode is selected
-The BPM can be modify on the fly.
+
+The BPM can be modified on the fly.
 
 ## Acknowledgments
 * [Tone.js](https://tonejs.github.io/)
