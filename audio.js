@@ -1,4 +1,11 @@
-let all_notes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"]
+let all_notes = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+let instruments = [];
+let key;
+let mode;
+let minor_type;
+let chords_progression;
+let bpm;
+
 
 function createDuration(n_measures) {
   durations = [];
@@ -36,6 +43,7 @@ function chooseNote(chords_progression, duration) {
   for (var i = 0; i < duration.length; i++) {
     var scale = Tonal.Chord.get(chords_progression[i]).notes;
     scale.push('r');
+    scale.push('r');
     for (var j = 0; j < duration[i].length; j++) {
       notes.push(random(scale));
     }
@@ -45,14 +53,18 @@ function chooseNote(chords_progression, duration) {
 
 function chooseChords(key, len) {
   // Return a set of length len of elements belonging to scale
-  chords = [];
-  if (Math.round(Math.random()) == 1) {
+  // Get the mode
+  let key_chords;
+  if (mode == 'major') {
     key_chords = Tonal.Key.majorKey(key).chords;
-    console.log('Major');
-  } else {
-    key_chords = Tonal.Key.minorKey(key).natural.chords;
-    console.log('Minor');
+    console.log("Major scale");
   }
+  else {
+    key_chords = Tonal.Key.minorKey(key)[minor_type].chords;
+    console.log(`Minor ${minor_type} scale`)
+  }
+  // }
+  chords = [];
   for (var i = 0; i < len; i++) {
     chords.push(random(key_chords));
   }
@@ -95,62 +107,38 @@ function createChordsPhrase(duration, time, note) {
   return phrase;
 }
 
-function Instrument(chords_progression, octave, poly) {
-  this.poly = poly;
+function Instrument(synth, octave, chords = False) {
   this.octave = octave;
-  this.chords_progression = chords_progression;
-  // Set the instrument
-  if (poly) {
-    // If poly is true, it will create a polyphonic instrument
-    this.sound = new Tone.PolySynth(3, Tone.Synth, {
-      oscillator: {
-        type: "sine"
-      }
-    }).toMaster();
-    this.sound.volume.value = -12;
-  } else {
-    this.sound = new Tone.Synth({
-      oscillator: {
-        type: "sine"
-      }
-    }
-    ).toMaster();
-  }
+  this.synth = new Tone.PolySynth(synth).toDestination();
+  this.chords = chords;
   this.part = new Tone.Part();
   this.generate();
 }
 
 Instrument.prototype.generate = function () {
-  this.part.removeAll()
-  if (this.poly) {
-    // Create a phrase for the instrument
-    this.durations = new Array(this.chords_progression.length);
+  this.part.clear()
+  if (this.chords) {
+    // Create the chords progression
+    this.durations = new Array(chords_progression.length);
     this.durations.fill(1);
     this.durations = [this.durations];
     this.times = durationToTime(this.durations);
-    this.notes = this.chords_progression;
+    this.notes = chords_progression;
     this.phrase = createChordsPhrase(this.durations[0], this.times, this.notes);
-    // Create the part
-    this.part = new Tone.Part((time, value) => {
-      this.sound.triggerAttackRelease(value.note, value.duration, time);
-    }, this.phrase);
-    this.part.start(0);
-    this.part.loopEnd = this.chords_progression.length + 'm';
-    this.part.loop = true;
   } else {
     // Create a phrase for the instrument
-    this.durations = createDuration(this.chords_progression.length);
+    this.durations = createDuration(chords_progression.length);
     this.times = durationToTime(this.durations);
-    this.notes = chooseNote(this.chords_progression, this.durations);
+    this.notes = chooseNote(chords_progression, this.durations);
     this.phrase = createPhrase(this.durations, this.times, this.notes, this.octave);
-    // Create the part
-    this.part = new Tone.Part((time, value) => {
-      this.sound.triggerAttackRelease(value.note, value.duration, time);
-    }, this.phrase);
-    this.part.start(0);
-    this.part.loopEnd = this.chords_progression.length + 'm';
-    this.part.loop = true;
   }
+  // Create the part
+  this.part = new Tone.Part((time, value) => {
+    this.synth.triggerAttackRelease(value.note, value.duration, time);
+  }, this.phrase);
+  this.part.start(0);
+  this.part.loopEnd = chords_progression.length + 'm';
+  this.part.loop = true;
 }
 
 Instrument.prototype.muteOrUnmute = function () {
@@ -179,6 +167,9 @@ function playMusic() {
 // Callback to pause
 function pauseMusic() {
   if (Tone.Transport.state == "started") {
+    for (var i = 0; i < instruments.length; i++) {
+      instruments[i].synth.releaseAll();
+    }
     Tone.Transport.pause();
     document.getElementById("pause-button").style.borderColor = "#FF8E4F";
   }
@@ -193,47 +184,120 @@ function stopMusic() {
   if (Tone.Transport.state == "paused") {
     document.getElementById("pause-button").style.borderColor = "#000000";
   }
+  for (var i = 0; i < instruments.length; i++) {
+    instruments[i].synth.releaseAll();
+  }
   Tone.Transport.stop();
   document.getElementById("play-button").style.borderColor = "#000000";
 }
 
 function generateMusic() {
+  if (Tone.Transport.state == "paused") {
+    document.getElementById("pause-button").style.borderColor = "#000000";
+  }
   Tone.Transport.stop();
-  key = random(all_notes);
+  for (var i = 0; i < instruments.length; i++) {
+    instruments[i].synth.releaseAll();
+  }
   chords_progression = chooseChords(key, 4);
   for (var i = 0; i < instruments.length; i++) {
-    instruments[i].chords_progression = chords_progression;
     instruments[i].generate();
   }
-  Tone.Transport.bpm.value = Math.round(random(40, 90));
-  Tone.Transport.start();
+  bpm = Math.round(random(40, 110));
+  Tone.Transport.bpm.value = bpm;
+  document.getElementById("bpm-input").value = bpm;
+  playMusic();
 }
 
-let instruments = [];
-let key;
+// Callback when selecting key
+function keySelected() {
+  var key_selection = document.getElementById("key-select").value;
+  key = key_selection;
+  generateMusic();
+}
+
+// Callback when selecting mode
+function modeSelected() {
+  var mode_selected = document.getElementById("mode-select").value;
+  var minor_selection = document.getElementById("minor-select");
+  var minor_type_selection = document.getElementById("minor-type-select");
+  if (mode_selected == 'minor') {
+    minor_selection.classList.remove("hidden");
+    minor_type_selection.classList.remove("hidden");
+    minor_type = minor_selection.value
+  } else {
+    minor_selection.classList.add("hidden");
+    minor_type_selection.classList.add("hidden");
+  }
+  mode = mode_selected;
+  generateMusic();
+}
+
+// Callback when selecting mode
+function minorSelected() {
+  var minor_selection = document.getElementById("minor-select").value;
+  minor_type = minor_selection;
+  generateMusic();
+}
+
+// Callback when changing BPM
+function changeBPM() {
+  Tone.Transport.bpm.value = document.getElementById("bpm-input").value;
+}
 
 function setup() {
+
+  noCanvas();
+
+  // Create all the notes options at startup
+  var keySelect = document.getElementById("key-select");
+  for (var i = 0; i < all_notes.length; i++) {
+    var optn = all_notes[i];
+    var el = document.createElement("option");
+    el.textContent = optn;
+    el.value = optn;
+    keySelect.appendChild(el);
+  }
+  // Random BPM at startup
+  bpm = Math.round(random(40, 110));
+  document.getElementById("bpm-input").value = bpm;
+
   Tone.Transport.loopEnd = '4m';
   Tone.Transport.loop = true;
-  Tone.Transport.bpm.value = Math.round(random(40, 90));
+  Tone.Transport.bpm.value = bpm;
 
   // Get the key
-  key = random(all_notes);
-  // Generate the chords progression
+  key = keySelect.value;
+
+  // Get the mode
+  var modeSelect = document.getElementById("mode-select");
+  mode = modeSelect.value;
+
+  // Get the minor type
+  var minorSelect = document.getElementById("minor-select");
+  minor_type = minorSelect.value;
+
+  // Generate the chords progression with four chords
   chords_progression = chooseChords(key, 4);
 
   // Chords section
-  chords = new Instrument(chords_progression, "3", true);
-  instruments.push(chords)
+  let chord_synth = Tone.FMSynth;
+  chord = new Instrument(chord_synth, "3", true);
+  chord.synth.volume.value = -22;
+  instruments.push(chord)
 
   // Bass section
-  bass = new Instrument(chords_progression, "2", false);
+  let bass_synth = Tone.AMSynth;
+  bass = new Instrument(bass_synth, "2", false);
   instruments.push(bass);
 
   // Melody section
-  melody = new Instrument(chords_progression, "4", false);
+  let melody_synth = Tone.Synth;
+  melody = new Instrument(melody_synth, "4", false);
   instruments.push(melody);
+}
 
-
+function draw() {
+  noLoop();
 }
 
