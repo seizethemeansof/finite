@@ -155,6 +155,7 @@ Instrument.prototype.muteOrUnmute = function () {
 // Callback to play
 function playMusic() {
   if (Tone.Transport.state == "stopped") {
+    Tone.context.resume();
     Tone.Transport.start();
     document.getElementById("play-button").style.borderColor = "#FF8E4F";
   }
